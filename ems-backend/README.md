@@ -1,18 +1,19 @@
 # Employee Management System – Spring Boot (PostgreSQL)
 
-`ems-backend` is a RESTful Employee Management System built with Java and Spring Boot. It exposes clean CRUD APIs for managing employees (and optionally departments/roles), persists data in PostgreSQL, and follows a layered architecture with DTOs, services, repositories, and centralized exception handling.
+`ems-backend` is a RESTful Employee Management System built using Spring Boot and Java.  
+The backend provides clean and efficient CRUD APIs for managing employees, structured using a layered architecture (Controller → Service → Repository). PostgreSQL is used as the primary database, with Spring Data JPA handling ORM operations.
 
 ---
 
 ## 🚀 Features
 
 - Create, update, fetch, and delete employees
-- Optional departments/roles mapping (adapt based on your implementation)
-- RESTful JSON APIs following standard HTTP methods
-- DTO-based request/response models to decouple API and entities
-- Layered architecture: Controller → Service → Repository → Database
-- PostgreSQL persistence with Spring Data JPA
-- Global error handling and consistent error responses
+- DTO-based request/response models
+- Layered, maintainable architecture
+- Centralized exception handling with human-readable error responses
+- PostgreSQL persistence using Spring Data JPA
+- Model mapping via custom mapper classes
+- Production-ready structure with modular components
 
 ---
 
@@ -22,14 +23,16 @@
 ems-backend/
 ├── src/
 │   ├── main/
-│   │   ├── java/com/akash/ems/
-│   │   │   ├── controller/       # REST controllers (Employee, Department, etc.)
-│   │   │   ├── service/          # Business logic + validation
-│   │   │   ├── repository/       # Spring Data JPA repositories
-│   │   │   ├── entity/           # JPA entities (Employee, Department, Role...)
-│   │   │   ├── dto/              # Request/response DTOs (if used)
-│   │   │   ├── exception/        # Custom exceptions + global handler
-│   │   │   └── EmsBackendApplication.java
+│   │   ├── java/com/akashspring/emsbackend/
+│   │   │   ├── controller/        # REST controllers (EmployeeController)
+│   │   │   ├── dto/               # Request/response DTOs
+│   │   │   ├── entity/            # JPA entities (Employee, etc.)
+│   │   │   ├── exception/         # Custom exceptions + global handler
+│   │   │   ├── mapper/            # Entity <-> DTO converters
+│   │   │   ├── repository/        # Spring Data JPA repositories
+│   │   │   └── service/           # Business logic layer
+│   │   │
+│   │   │   └── EmsBackendApplication.java   # Main Spring Boot application
 │   │   └── resources/
 │   │       ├── application.properties
 │   │       ├── static/
@@ -40,13 +43,11 @@ ems-backend/
 └── .gitignore
 ```
 
-Update the package path above if your base package differs.
-
 ---
 
-## 🧩 Error Response Format
+## 🧩 Example Error Response
 
-Typical error response returned by the global exception handler:
+Your global exception handler returns structured JSON like:
 
 ```json
 {
@@ -71,9 +72,7 @@ Typical error response returned by the global exception handler:
 
 ---
 
-## ⚙️ PostgreSQL Configuration
-
-`src/main/resources/application.properties` (adapt the values you actually use):
+## ⚙️ PostgreSQL Configuration (application.properties)
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/emsdb
@@ -86,13 +85,10 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.properties.hibernate.format_sql=true
 ```
 
-Database creation:
-
+### Database setup:
 ```sql
 CREATE DATABASE emsdb;
 ```
-
-You can also switch to environment variables instead of hard-coding credentials in production.
 
 ---
 
@@ -105,58 +101,53 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-By default, the backend runs at:
+App runs at:
 
-```text
+```
 http://localhost:8080
 ```
 
 ---
 
-## 📌 Example REST Endpoints
+## 📌 Available REST Endpoints
 
-Adjust these to match your actual controller mappings.
-
-### Employee APIs
+### **Employee APIs**
 
 | Method | Endpoint               | Description                     |
 |--------|------------------------|---------------------------------|
 | POST   | /api/employees         | Create a new employee           |
-| GET    | /api/employees         | Get all employees               |
-| GET    | /api/employees/{id}    | Get employee by ID              |
-| PUT    | /api/employees/{id}    | Update an existing employee     |
+| GET    | /api/employees         | Fetch all employees             |
+| GET    | /api/employees/{id}    | Fetch employee by ID            |
+| PUT    | /api/employees/{id}    | Update employee details         |
 | DELETE | /api/employees/{id}    | Delete an employee              |
 
-### Department APIs (if implemented)
-
-| Method | Endpoint               | Description                     |
-|--------|------------------------|---------------------------------|
-| GET    | /api/departments       | Get all departments             |
-| POST   | /api/departments       | Create a new department         |
+Update this section if you have extra modules like departments/roles.
 
 ---
 
-## 🧱 Architecture Overview
+## 🧱 Architecture Summary
 
-- **Controller Layer** – Handles HTTP requests and returns HTTP responses.
-- **DTO Layer** – Encapsulates payloads exposed by the API; protects entity models.
-- **Service Layer** – Contains business logic, validation, and transaction coordination.
-- **Repository Layer** – Interfaces extending Spring Data JPA to interact with PostgreSQL.
-- **Entity Layer** – JPA-annotated domain models mapped to database tables.
-- **Exception Layer** – Global exception handling using `@ControllerAdvice` with custom error objects.
+- **controller** → receives requests, returns JSON
+- **dto** → clean API payload definitions
+- **entity** → JPA models persisted in PostgreSQL
+- **mapper** → converts entity ↔ DTO cleanly
+- **service** → business logic and transaction boundaries
+- **repository** → Spring Data interfaces for DB operations
+- **exception** → centralized error handling across application
 
 ---
 
-## 📜 Version Control
+## 📜 Version Control Practices
 
-- Clean `.gitignore` (no `target/`, no `.idea/`, no `*.iml` committed)
-- Modular commits with clear messages like:
-    - `Add employee entity and repository`
-    - `Implement employee CRUD APIs`
-    - `Add global exception handler`
+- Clean `.gitignore` ensures no `target/`, `.idea/`, or `.iml` files are pushed
+- Small, meaningful commits like:
+    - `Add Employee entity + repository`
+    - `Implement Employee CRUD service`
+    - `Add DTO + mapper for Employee`
+    - `Add GlobalExceptionHandler`
 
 ---
 
 ## 📄 License
 
-Open for learning, demos, and portfolio use.
+Open-source. You may use it for learning, interview prep, or portfolio demonstration.
